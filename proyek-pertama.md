@@ -64,7 +64,9 @@ Dataset ini dirancang untuk tugas klasifikasi sentimen, di mana setiap tweet dik
 1. Distribusi Label Sentimen:
    Menganalisis jumlah tweet untuk setiap label sentimen (positif, negatif, dan other) untuk memahami apakah data seimbang atau tidak.
    Untuk melihat sentimen pada data, kadang kita perlu melakukan visualisasi terhadap kata-kata dengan fungsi word cloud.
+   
    ![image](https://github.com/user-attachments/assets/952333ab-5909-4e50-8124-f4acf79f8d14)
+
    Terlihat dari grafik kita memiliki dataset yang tidak seimbang pada dataset yang berlabel neutral . Meskipun demikian, ini tidak menjadi masalah yang signifikan karena kita melatih ulasan berlabel sentimen satu per satu, menggunakan label sentimen masing-masing ulasan.
 3. Panjang Tweet:
    Menghitung rata-rata panjang tweet dalam karakter dan kata, serta visualisasi distribusi panjang tweet untuk melihat apakah ada pola tertentu yang relevan dengan klasifikasi sentimen.
@@ -72,10 +74,13 @@ Dataset ini dirancang untuk tugas klasifikasi sentimen, di mana setiap tweet dik
 4. Frekuensi Kata-Kata Umum:
    Melakukan analisis frekuensi kata untuk tweet yang dikategorikan sebagai positif, negatif, atau other. Hal ini membantu mengidentifikasi kata-kata yang sering muncul dalam setiap kategori sentimen.
    ![image](https://github.com/user-attachments/assets/2dca8cca-11ed-44ac-888c-a833c6da2722)
+
    Ini adalah kata-kata yang paling sering muncul dalam dataset berlabel positif. Dari sana kita dapat mengenali beberapa kata kunci seperti good, easier, best dan perfect
    ![image](https://github.com/user-attachments/assets/d5eaea66-903c-4889-91b1-da67748324cd)
+
    Ini adalah kata-kata yang paling sering muncul dalam dataset berlabel negatif. Dari sana kita dapat mengenali beberapa kata kunci seperti problem, broken, poor dan wrong
    ![image](https://github.com/user-attachments/assets/9a6f56b7-6cdd-41c5-b164-d11a734ade0e)
+
    Ini adalah kata-kata yang paling sering muncul dalam dataset berlabel neutral. Dari sana kita dapat mengenali beberapa kata kunci seperti maybe, almost, might, dan possible
    
 ## Data Preparation
@@ -190,8 +195,9 @@ Sebagai langkah pertama, Model dasar dibangun menggunakan LinearSVC dengan param
     | accuracy     |           |        | 0.97     | 134085  |
     | macro avg    | 0.97      | 0.97   | 0.97     | 134085  |
     | weighted avg | 0.97      | 0.97   | 0.97     | 134085  |
+  
     Model baseline sudah menunjukkan performa yang sangat baik dengan F1-score yang konsisten di semua kelas. Namun, untuk memastikan model ini mencapai hasil optimal, dilakukan hyperparameter tuning.
-- . Hyperparameter Tuning
+- Hyperparameter Tuning
 Setelah membuat model dasar, langkah berikutnya adalah meningkatkan kinerja model dengan melakukan hyperparameter tuning. Parameter utama yang disesuaikan adalah:
 
     - C: Parameter regulasi yang mengontrol keseimbangan antara margin besar dan kesalahan klasifikasi. Nilai C yang lebih tinggi mengurangi margin tetapi bisa menyebabkan overfitting.
@@ -241,7 +247,7 @@ Setelah membuat model dasar, langkah berikutnya adalah meningkatkan kinerja mode
 Ini menunjukkan bahwa model LinearSVC dengan TF-IDF telah memberikan generalisasi yang sangat baik pada dataset ini tanpa memerlukan banyak penyesuaian parameter tambahan.
 
 ### **Evaluation**
-
+---
 Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untuk mengukur performanya dalam mengklasifikasikan sentimen tweet. Metrik yang digunakan dalam evaluasi ini adalah **precision**, **recall**, **F1-score**, dan **support**, yang memberikan pandangan komprehensif tentang kinerja model, khususnya dalam tugas klasifikasi multikelas. Metrik-metrik ini dipilih karena cocok untuk masalah klasifikasi yang melibatkan ketidakseimbangan kelas, seperti klasifikasi sentimen.
 
 #### **Penjelasan Metrik yang Digunakan**
@@ -249,37 +255,37 @@ Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untu
 1. **Precision**:
    - **Definisi**: Precision mengukur seberapa banyak prediksi positif yang benar-benar positif. Artinya, precision menghitung seberapa akurat model ketika memprediksi sebuah kelas tertentu.
    - **Formula**: 
-        $$$
-         \text{Precision} = \frac{TP}{TP + FP}
-        $$$
-
+     $\[
+     \text{Precision} = \frac{TP}{TP + FP}
+     \]$
+     
      Di mana **TP** (True Positive) adalah jumlah prediksi benar untuk kelas positif, dan **FP** (False Positive) adalah jumlah prediksi salah untuk kelas positif.
    - **Kegunaan**: Precision penting saat false positive lebih kritis, seperti dalam konteks deteksi spam atau konten negatif, di mana salah deteksi bisa berdampak besar.
 
 2. **Recall**:
    - **Definisi**: Recall mengukur seberapa baik model menangkap semua kasus positif yang sebenarnya ada. Ini menunjukkan kemampuan model untuk menemukan semua instance dari kelas tertentu.
    - **Formula**:
-     $$$
+     $\[
      \text{Recall} = \frac{TP}{TP + FN}
-     $$$
-
+     \]$
+     
      Di mana **FN** (False Negative) adalah jumlah prediksi salah untuk kelas negatif.
    - **Kegunaan**: Recall sangat penting ketika kita tidak ingin melewatkan instance positif, misalnya dalam kasus di mana pendeteksian sentimen negatif sangat penting.
 
 3. **F1-score**:
    - **Definisi**: F1-score adalah harmonic mean dari precision dan recall. F1-score memberikan keseimbangan antara precision dan recall, yang sangat bermanfaat saat kedua metrik tersebut sama pentingnya.
    - **Formula**:
-     $$$
+     $\[
      \text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
-     $$$
-
+     \]$
+     
    - **Kegunaan**: F1-score memberikan pandangan keseluruhan performa model, terutama saat ada ketidakseimbangan antara precision dan recall.
 
 4. **Support**:
    - **Definisi**: Support adalah jumlah instance sebenarnya dari setiap kelas dalam dataset. Ini menunjukkan seberapa besar atau kecil tiap kelas dibandingkan dengan yang lain.
    - **Kegunaan**: Support membantu kita melihat distribusi data di tiap kelas dan bagaimana model menangani kelas yang mungkin lebih jarang muncul.
 
-
+---
 
 ### **Hasil Evaluasi Berdasarkan Metrik yang Digunakan**
 
@@ -309,5 +315,6 @@ Berdasarkan evaluasi menggunakan metrik **precision**, **recall**, dan **F1-scor
 ### **Kesimpulan**
 
 Evaluasi model dengan menggunakan metrik precision, recall, F1-score, dan support menunjukkan bahwa **LinearSVC** memberikan performa yang sangat baik dalam mengklasifikasikan sentimen tweet. Metrik-metrik ini memberikan gambaran menyeluruh tentang kemampuan model dalam menangani data teks dan memastikan model bekerja secara optimal dalam mendeteksi berbagai jenis sentimen tanpa bias yang berarti.
+
 
 
