@@ -51,6 +51,14 @@ Dalam proyek ini, data yang digunakan berasal dari dataset Twitter Sentiment Ana
 Dataset ini dirancang untuk tugas klasifikasi sentimen, di mana setiap tweet dikategorikan ke dalam tiga jenis sentimen: positif, negatif, atau other. Data ini akan digunakan untuk melatih model  Linear Support Vector Classifier (LinearSVC) dalam mendeteksi sentimen tweet secara otomatis.
 
 
+### Informasi Data:
+![image](https://github.com/user-attachments/assets/b57df407-5147-4af6-8c19-186a2b9b07c0)
+
+- **Jumlah Data**: Dataset ini memiliki total **691248  baris** dan **2 kolom**.
+- **Kondisi Data**: terdapat **4 missing value pada kolom text** dan terdapat **20825 duplicate value pada kolom text**, sehingga kita harus menghapus missing dan duplicate value lalu karena setiap tweet di dataset memiliki label sentimen dan teks tweet. Namun, data teks dapat mengandung simbol atau karakter khusus yang memerlukan pembersihan sebelum analisis.
+- **Tautan Sumber Data**: [Twitter Sentiment Analysis Dataset](https://www.kaggle.com/datasets/daniel09817/twitter-sentiment-analysis).
+
+
 ### Variabel-variabel Twitter Sentiment Analysis Dataset adalah sebagai berikut:
 - Text: Kolom ini berisi teks mentah dari tweet yang akan dianalisis. Ini adalah fitur utama yang akan diolah dengan teknik Natural Language Processing (NLP) dan feature engineering menggunakan TF-IDF untuk membangun representasi numerik dari setiap tweet.
 
@@ -156,108 +164,62 @@ Setelah teks dibersihkan dan diproses, langkah selanjutnya adalah mengubah teks 
     TF-IDF membantu dalam memprioritaskan kata-kata yang lebih penting dalam konteks klasifikasi sentimen, sehingga kata-kata yang terlalu umum atau sering muncul tidak diberikan bobot yang berlebihan.
 
 ## Modeling
-Pada tahap ini, model Linear Support Vector Classifier (LinearSVC) digunakan untuk menyelesaikan masalah klasifikasi sentimen pada tweet. LinearSVC dipilih karena lebih efisien dalam menangani dataset besar dengan banyak fitur, terutama saat menggunakan representasi teks berbasis TF-IDF. Pemodelan dilakukan melalui dua tahapan: pembuatan model dasar (baseline model) dan peningkatan kinerja melalui hyperparameter tuning.
 
-- . Linear Support Vector Classifier (LinearSVC)
-LinearSVC adalah versi yang dioptimalkan dari Support Vector Machines (SVM) yang bekerja dengan asumsi data dapat dipisahkan secara linier. Algoritma ini bertujuan untuk menemukan garis atau hyperplane terbaik yang memisahkan data ke dalam kelas-kelas yang berbeda dengan margin terbesar.
-    
-    Kelebihan LinearSVC:
-    - Efisiensi dalam skala besar: LinearSVC sangat cepat dan efisien untuk dataset yang besar dengan banyak fitur, seperti representasi teks berbasis TF-IDF.
-    - Tidak memerlukan kernel: Tidak seperti SVM tradisional yang menggunakan kernel, LinearSVC bekerja langsung dengan fitur linier, sehingga lebih sederhana dan efisien dari segi komputasi.
-    - Kemampuan regulasi: Parameter regulasi (C) dapat diatur untuk menyesuaikan kompleksitas model, membantu dalam menghindari overfitting.
+Pada tahap ini, model **Linear Support Vector Classifier (LinearSVC)** digunakan untuk menyelesaikan masalah klasifikasi sentimen pada tweet. LinearSVC dipilih karena lebih efisien dalam menangani dataset besar dengan banyak fitur, terutama saat menggunakan representasi teks berbasis **TF-IDF**. Pemodelan dilakukan melalui dua tahapan: **pembuatan model dasar (baseline model)** dan **peningkatan kinerja melalui hyperparameter tuning**.
 
-    Kekurangan LinearSVC:
-    - Kurang fleksibel untuk data yang tidak dapat dipisahkan secara linier: LinearSVC tidak dapat menangani data yang tidak linier dengan baik, berbeda dengan SVM dengan kernel non-linier seperti RBF.
-    - Kurang sensitif terhadap data yang memiliki kompleksitas non-linier: Jika data memerlukan transformasi non-linier untuk dipisahkan dengan baik, LinearSVC mungkin tidak akan memberikan performa optimal.
-- . Baseline Model
-Sebagai langkah pertama, Model dasar dibangun menggunakan LinearSVC dengan parameter default. Ini memberikan gambaran awal tentang performa model tanpa penyesuaian lebih lanjut.
-    ```
-    from sklearn.svm import LinearSVC
-    from sklearn.metrics import classification_report
-    
-    # Membuat model SVM dasar
-    svm_model = LinearSVC()  # Menggunakan parameter default
-    svm_model.fit(X_train, y_train)
-    
-    # Evaluasi model pada data uji
-    y_pred = svm_model.predict(X_test)
-    print(classification_report(y_test, y_pred))
-    
-    ```
+### 1. Linear Support Vector Classifier (LinearSVC)
+LinearSVC adalah versi yang dioptimalkan dari **Support Vector Machines (SVM)** yang bekerja dengan asumsi data dapat dipisahkan secara linier. Algoritma ini bertujuan untuk menemukan garis atau hyperplane terbaik yang memisahkan data ke dalam kelas-kelas yang berbeda dengan margin terbesar.
 
-     Model dievaluasi menggunakan metrik precision, recall, F1-score, dan support untuk setiap kelas sentimen (positif, negatif, dan other). Hasil dari model baseline ini menjadi titik awal untuk meningkatkan kinerja model.
-     Hasil evaluasi untuk model baseline LinearSVC tanpa hyperparameter tuning menunjukkan performa yang sangat baik dengan metrik berikut:
-     |              | precision | recall | f1-score | support |
-    |--------------|-----------|--------|----------|---------|
-    | negative     | 0.97      | 0.97   | 0,97     | 47674   |
-    | neutral      | 0.96      | 0.96   | 0.96     | 38723   |
-    | positive     | 0.98      | 0.97   | 0.98     | 47688   |
-    | accuracy     |           |        | 0.97     | 134085  |
-    | macro avg    | 0.97      | 0.97   | 0.97     | 134085  |
-    | weighted avg | 0.97      | 0.97   | 0.97     | 134085  |
-  
-    Model baseline sudah menunjukkan performa yang sangat baik dengan F1-score yang konsisten di semua kelas. Namun, untuk memastikan model ini mencapai hasil optimal, dilakukan hyperparameter tuning.
-- Hyperparameter Tuning
-Setelah membuat model dasar, langkah berikutnya adalah meningkatkan kinerja model dengan melakukan hyperparameter tuning. Parameter utama yang disesuaikan adalah:
+#### Kelebihan LinearSVC:
+- **Efisiensi dalam skala besar**: LinearSVC sangat cepat dan efisien untuk dataset besar dengan banyak fitur, seperti representasi teks berbasis **TF-IDF**.
+- **Tidak memerlukan kernel**: LinearSVC bekerja langsung dengan fitur linier, tanpa menggunakan kernel seperti SVM tradisional, sehingga lebih sederhana dan efisien dari segi komputasi.
+- **Kemampuan regulasi**: Parameter regulasi (**C**) dapat diatur untuk menyesuaikan kompleksitas model, membantu dalam menghindari **overfitting**.
 
-    - C: Parameter regulasi yang mengontrol keseimbangan antara margin besar dan kesalahan klasifikasi. Nilai C yang lebih tinggi mengurangi margin tetapi bisa menyebabkan overfitting.
-    - penalty: Menentukan jenis regulasi yang digunakan. Pada LinearSVC, hanya l2 yang valid untuk dual=True.
-    - loss: Fungsi kerugian yang digunakan untuk mengoptimalkan model, seperti hinge atau squared_hinge.
-    - max_iter: Jumlah iterasi maksimum yang diizinkan untuk algoritma konvergen.
-    
-    ```
-   from sklearn.model_selection import GridSearchCV
+#### Kekurangan LinearSVC:
+- **Kurang fleksibel untuk data yang tidak linier**: LinearSVC tidak dapat menangani data yang tidak dapat dipisahkan secara linier dengan baik, berbeda dengan SVM dengan kernel non-linier seperti **RBF**.
+- **Kurang sensitif terhadap data yang kompleks**: LinearSVC mungkin tidak memberikan performa optimal jika data memerlukan transformasi non-linier untuk dipisahkan dengan baik.
 
-    # Definisikan parameter untuk GridSearch
-    param_grid = {
-        'C': [0.1, 1, 10, 100],
-        'penalty': ['l2'],
-        'loss': ['hinge', 'squared_hinge'],
-        'max_iter': [1000, 2000, 5000]
-    }
-    
-    # Membangun model dengan GridSearchCV
-    grid_search = GridSearchCV(LinearSVC(), param_grid, refit=True, verbose=2, cv=5)
-    grid_search.fit(X_train, y_train)
-    
-    # Hasil parameter terbaik
-    print("Best Parameters: ", grid_search.best_params_)
-    
-    # Evaluasi model yang di-tune pada data uji
-    y_pred_tuned = grid_search.best_estimator_.predict(X_test)
-    print(classification_report(y_test, y_pred_tuned))
-    ```
-    Proses Improvement:
-    - Tuning Parameter C: Nilai C yang lebih kecil (0.1) mendorong model untuk memiliki margin lebih luas, menghindari overfitting, sedangkan nilai yang lebih tinggi (100) dapat memberikan performa lebih baik pada data latih tetapi berisiko overfitting.
-    - Pemilihan Loss: Fungsi kerugian hinge mungkin lebih sederhana tetapi squared_hinge sering kali memberikan performa lebih stabil.
-    - Tuning max_iter: Jumlah iterasi yang cukup tinggi diperlukan untuk memastikan konvergensi model, terutama pada dataset besar.
-    
-    Setelah dilakukan hyperparameter tuning, hasil evaluasi menunjukkan bahwa tidak ada perubahan signifikan dalam performa model:
-    |              | precision | recall | f1-score | support |
-    |--------------|-----------|--------|----------|---------|
-    | negative     | 0.97      | 0.97   | 0,97     | 47674   |
-    | neutral      | 0.96      | 0.96   | 0.96     | 38723   |
-    | positive     | 0.98      | 0.97   | 0.98     | 47688   |
-    | accuracy     |           |        | 0.97     | 134085  |
-    | macro avg    | 0.97      | 0.97   | 0.97     | 134085  |
-    | weighted avg | 0.97      | 0.97   | 0.97     | 134085  |
-    
-    Setelah melakukan hyperparameter tuning, tidak terjadi peningkatan yang signifikan dari performa model baseline. Model LinearSVC yang sudah menggunakan parameter default memberikan hasil yang optimal sejak awal, dengan precision, recall, dan F1-score yang tinggi di seluruh kelas sentimen. Tuning parameter, meskipun sudah diterapkan dengan variasi yang cukup luas, tidak memberikan peningkatan berarti.
+### 2. Baseline Model
+Sebagai langkah pertama, model dasar dibangun menggunakan **LinearSVC** dengan parameter default. Model dievaluasi menggunakan metrik **precision**, **recall**, dan **F1-score** untuk setiap kelas sentimen (positive, neutral, dan negative). Hasil dari baseline model ini menjadi titik awal untuk peningkatan kinerja model.
 
-Ini menunjukkan bahwa model LinearSVC dengan TF-IDF telah memberikan generalisasi yang sangat baik pada dataset ini tanpa memerlukan banyak penyesuaian parameter tambahan.
+### 3. Hyperparameter Tuning
+Setelah membangun model dasar, langkah berikutnya adalah meningkatkan kinerja model melalui **hyperparameter tuning**. Parameter utama yang disesuaikan adalah:
 
-### **Evaluation**
+- **C**: Mengontrol keseimbangan antara margin besar dan kesalahan klasifikasi.
+- **penalty**: Jenis regulasi yang digunakan (hanya **l2** yang valid untuk **dual=True**).
+- **loss**: Fungsi kerugian yang digunakan untuk mengoptimalkan model, seperti **hinge** atau **squared_hinge**.
+- **max_iter**: Jumlah iterasi maksimum yang diizinkan untuk algoritma konvergen.
+
+#### Proses Improvement:
+- **Tuning Parameter C**: Nilai **C** yang lebih kecil mendorong model untuk memiliki margin lebih luas, menghindari overfitting, sementara nilai yang lebih tinggi memberikan performa lebih baik pada data latih tetapi berisiko **overfitting**.
+- **Pemilihan Loss**: Fungsi kerugian **hinge** lebih sederhana tetapi **squared_hinge** sering kali memberikan performa yang lebih stabil.
+- **Tuning max_iter**: Jumlah iterasi yang cukup tinggi diperlukan untuk memastikan konvergensi model, terutama pada dataset besar.
+
+### 4. Best Parameters
+Hasil tuning menghasilkan parameter terbaik sebagai berikut:
+- **C**: 1
+- **penalty**: l2
+- **loss**: hinge
+- **max_iter**: 5000
+
+Hyperparameter tuning dilakukan untuk memaksimalkan performa model tanpa overfitting, namun hasil evaluasi menunjukkan bahwa peningkatan performa dari baseline model tidak signifikan.
+
+> Penjelasan performa model akan dibahas lebih lanjut pada bagian **Evaluation**.
+
 ---
-Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untuk mengukur performanya dalam mengklasifikasikan sentimen tweet. Metrik yang digunakan dalam evaluasi ini adalah **precision**, **recall**, **F1-score**, dan **support**, yang memberikan pandangan komprehensif tentang kinerja model, khususnya dalam tugas klasifikasi multikelas. Metrik-metrik ini dipilih karena cocok untuk masalah klasifikasi yang melibatkan ketidakseimbangan kelas, seperti klasifikasi sentimen.
+
+
+## **Evaluation**
+
+Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untuk mengukur performanya dalam mengklasifikasikan sentimen tweet. Metrik yang digunakan dalam evaluasi ini adalah **precision**, **recall**, dan **F1-score**, yang memberikan pandangan komprehensif tentang kinerja model, khususnya dalam tugas klasifikasi multikelas. Metrik-metrik ini dipilih karena cocok untuk masalah klasifikasi yang melibatkan ketidakseimbangan kelas, seperti klasifikasi sentimen.
 
 #### **Penjelasan Metrik yang Digunakan**
 
 1. **Precision**:
    - **Definisi**: Precision mengukur seberapa banyak prediksi positif yang benar-benar positif. Artinya, precision menghitung seberapa akurat model ketika memprediksi sebuah kelas tertentu.
-   - **Formula**: 
-     $\[
-     \text{Precision} = \frac{TP}{TP + FP}
-     \]$
+   - **Formula**:
+     
+     $$\text{Precision} = \frac{TP}{TP + FP}$$
      
      Di mana **TP** (True Positive) adalah jumlah prediksi benar untuk kelas positif, dan **FP** (False Positive) adalah jumlah prediksi salah untuk kelas positif.
    - **Kegunaan**: Precision penting saat false positive lebih kritis, seperti dalam konteks deteksi spam atau konten negatif, di mana salah deteksi bisa berdampak besar.
@@ -265,9 +227,8 @@ Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untu
 2. **Recall**:
    - **Definisi**: Recall mengukur seberapa baik model menangkap semua kasus positif yang sebenarnya ada. Ini menunjukkan kemampuan model untuk menemukan semua instance dari kelas tertentu.
    - **Formula**:
-     $\[
-     \text{Recall} = \frac{TP}{TP + FN}
-     \]$
+     
+     $$\text{Recall} = \frac{TP}{TP + FN}$$
      
      Di mana **FN** (False Negative) adalah jumlah prediksi salah untuk kelas negatif.
    - **Kegunaan**: Recall sangat penting ketika kita tidak ingin melewatkan instance positif, misalnya dalam kasus di mana pendeteksian sentimen negatif sangat penting.
@@ -275,15 +236,10 @@ Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untu
 3. **F1-score**:
    - **Definisi**: F1-score adalah harmonic mean dari precision dan recall. F1-score memberikan keseimbangan antara precision dan recall, yang sangat bermanfaat saat kedua metrik tersebut sama pentingnya.
    - **Formula**:
-     $\[
-     \text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
-     \]$
+     
+     $$\[\text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}\]$$
      
    - **Kegunaan**: F1-score memberikan pandangan keseluruhan performa model, terutama saat ada ketidakseimbangan antara precision dan recall.
-
-4. **Support**:
-   - **Definisi**: Support adalah jumlah instance sebenarnya dari setiap kelas dalam dataset. Ini menunjukkan seberapa besar atau kecil tiap kelas dibandingkan dengan yang lain.
-   - **Kegunaan**: Support membantu kita melihat distribusi data di tiap kelas dan bagaimana model menangani kelas yang mungkin lebih jarang muncul.
 
 ---
 
@@ -291,30 +247,64 @@ Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untu
 
 Berdasarkan evaluasi menggunakan metrik **precision**, **recall**, dan **F1-score**, hasilnya adalah sebagai berikut:
 
-| **Sentimen**  | **Precision** | **Recall** | **F1-score** | **Support** |
-|---------------|---------------|------------|--------------|-------------|
-| Negative      | 0.97          | 0.97       | 0.97         | 47,674      |
-| Neutral       | 0.96          | 0.96       | 0.96         | 38,723      |
-| Positive      | 0.98          | 0.97       | 0.98         | 47,688      |
-| **Accuracy**  | **0.97**      | -          | -            | 134,085     |
-| **Macro avg** | 0.97          | 0.97       | 0.97         | 134,085     |
-| **Weighted avg** | 0.97       | 0.97       | 0.97         | 134,085     |
+| **Sentimen**  | **Precision** | **Recall** | **F1-score** |
+|---------------|---------------|------------|--------------|
+| Negative      | 0.97          | 0.97       | 0.97         |
+| Neutral       | 0.96          | 0.96       | 0.96         |
+| Positive      | 0.98          | 0.97       | 0.98         |
+| **Akurasi**   | **0.97**      | -          | -            |
+| **Macro avg** | 0.97          | 0.97       | 0.97         |
+| **Weighted avg** | 0.97       | 0.97       | 0.97         |
 
-#### **Analisis Hasil**:
+---
 
-1. **Precision**: Semua kelas (negative, neutral, dan positive) memiliki precision di atas 0.96, menunjukkan bahwa model mampu memprediksi dengan tingkat akurasi yang tinggi untuk setiap kelas. Precision yang tinggi mengindikasikan bahwa jumlah false positive relatif rendah, sehingga model jarang salah dalam mengklasifikasikan sentimen tweet.
+
+
+### **Evaluasi Terhadap Problem Statements**
+
+1. **Pernyataan Masalah 1: Penyebaran Konten Negatif di Twitter**
+   - **Hasil Model**: Model klasifikasi sentimen yang dikembangkan menggunakan **LinearSVC** dengan teknik **TF-IDF** menunjukkan akurasi yang sangat tinggi (97% di seluruh metrik evaluasi utama, seperti precision, recall, dan F1-score). Hal ini menunjukkan bahwa model mampu mendeteksi tweet dengan sentimen negatif secara efektif.
+   - **Dampak Terhadap Bisnis**: Model ini dapat diterapkan di Twitter untuk secara otomatis mendeteksi dan memblokir tweet yang mengandung konten negatif. Dengan tingkat akurasi yang tinggi, penyebaran konten negatif akan berkurang secara signifikan, membantu menjaga keamanan dan kenyamanan pengguna Twitter.
    
-2. **Recall**: Recall untuk semua kelas juga sangat tinggi (0.96-0.97), yang menunjukkan bahwa model mampu menemukan hampir semua instance dari setiap kelas. Ini sangat penting dalam konteks analisis sentimen, terutama untuk mendeteksi konten negatif.
+2. **Pernyataan Masalah 2: Ketidakmampuan Pendekatan Manual dalam Memfilter Konten**
+   - **Hasil Model**: Implementasi model machine learning berbasis **LinearSVC** menggantikan pendekatan manual dalam memoderasi konten. Dengan kemampuan memproses ribuan tweet secara cepat dan real-time, model ini memberikan solusi otomatis yang efektif.
+   - **Dampak Terhadap Bisnis**: Pendekatan otomatis yang lebih efektif ini akan menghemat waktu dan sumber daya, sehingga meningkatkan efisiensi moderasi konten di Twitter, terutama mengingat volume besar tweet yang diposting setiap hari.
 
-3. **F1-score**: Dengan nilai F1-score rata-rata di atas 0.97, model memberikan keseimbangan yang baik antara precision dan recall. F1-score yang tinggi memastikan bahwa model tidak hanya akurat tetapi juga efektif dalam menangkap seluruh variasi sentimen di dalam dataset.
+3. **Pernyataan Masalah 3: Keterbatasan Algoritma dalam Mengenali Nuansa Bahasa**
+   - **Hasil Model**: Dengan pendekatan **TF-IDF**, model ini dapat mengenali konteks dan nuansa dalam tweet, bukan hanya kata-kata kasar eksplisit. Ini memungkinkan model untuk mendeteksi tweet negatif yang ditulis dengan bahasa yang lebih halus atau tidak langsung.
+   - **Dampak Terhadap Bisnis**: Peningkatan kemampuan untuk mengenali konteks dan nuansa dalam teks akan membuat Twitter lebih efisien dalam memblokir tweet berbahaya yang sulit dideteksi oleh algoritma moderasi konvensional.
 
-4. **Akurasi**: Akurasi keseluruhan model adalah 0.97, yang menunjukkan bahwa 97% dari prediksi model sesuai dengan label sebenarnya pada data uji. Ini adalah akurasi yang sangat baik untuk masalah klasifikasi dengan tiga kelas sentimen.
+---
+
+### **Apakah Goals Sudah Dicapai?**
+
+1. **Jawaban Pernyataan Masalah 1**:
+   - **Mengurangi Penyebaran Konten Negatif di Twitter**: Dengan model yang mampu mencapai **F1-score** sebesar 0.97 untuk tweet negatif, model ini telah secara efektif memenuhi tujuan untuk mendeteksi dan memblokir konten negatif.
+   
+2. **Jawaban Pernyataan Masalah 2**:
+   - **Meningkatkan Efektivitas Moderasi Konten**: Implementasi model machine learning telah menggantikan pendekatan manual dan memungkinkan moderasi otomatis dalam skala besar. Hal ini akan meningkatkan efektivitas dalam memoderasi konten negatif secara real-time.
+
+3. **Jawaban Pernyataan Masalah 3**:
+   - **Meningkatkan Akurasi Pendeteksian Konten Negatif**: Dengan kemampuan model untuk mengenali konteks dan nuansa bahasa menggunakan TF-IDF, akurasi dalam mendeteksi tweet negatif telah meningkat, bahkan untuk tweet yang tidak secara eksplisit menggunakan kata-kata kasar.
+
+---
+
+### **Dampak dari Solution Statements**
+
+1. **Solution Statement 1: Penggunaan LinearSVC dengan Teknik TF-IDF**
+   - **Dampak**: LinearSVC, dengan kombinasi teknik feature engineering TF-IDF, memberikan hasil yang optimal dalam menangani masalah klasifikasi teks besar dan beragam tweet. Model ini mampu memisahkan tweet dengan sentimen negatif dari yang lain dengan akurasi yang sangat tinggi, memenuhi harapan bisnis untuk mengurangi penyebaran konten negatif di Twitter.
+   
+2. **Solution Statement 2: Hyperparameter Tuning**
+   - **Dampak**: Meskipun tuning dilakukan, hasilnya menunjukkan bahwa performa model baseline sudah sangat optimal. Ini menegaskan bahwa solusi yang diberikan oleh model baseline sudah cukup efisien tanpa memerlukan banyak penyesuaian tambahan. Hal ini memastikan bahwa solusi bisa diimplementasikan dengan cepat tanpa memerlukan kompleksitas tambahan dalam proses pengaturan model.
 
 ---
 
 ### **Kesimpulan**
 
-Evaluasi model dengan menggunakan metrik precision, recall, F1-score, dan support menunjukkan bahwa **LinearSVC** memberikan performa yang sangat baik dalam mengklasifikasikan sentimen tweet. Metrik-metrik ini memberikan gambaran menyeluruh tentang kemampuan model dalam menangani data teks dan memastikan model bekerja secara optimal dalam mendeteksi berbagai jenis sentimen tanpa bias yang berarti.
+Berdasarkan hasil evaluasi, model yang dikembangkan dengan **LinearSVC** dan **TF-IDF** tidak hanya mampu menjawab seluruh pernyataan masalah, tetapi juga mencapai semua goals yang diharapkan. Implementasi model ini secara otomatis dapat memoderasi konten negatif di Twitter dengan presisi dan kecepatan tinggi, menggantikan pendekatan manual, dan mampu mendeteksi nuansa bahasa yang sulit dikenali oleh algoritma moderasi tradisional.
+
+Model ini memiliki dampak signifikan pada upaya Twitter dalam menciptakan lingkungan online yang lebih aman dan kondusif bagi para penggunanya.
+
 
 
 
