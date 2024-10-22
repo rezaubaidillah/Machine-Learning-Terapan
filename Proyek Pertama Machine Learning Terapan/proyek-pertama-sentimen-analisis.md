@@ -237,7 +237,7 @@ Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untu
    - **Definisi**: F1-score adalah harmonic mean dari precision dan recall. F1-score memberikan keseimbangan antara precision dan recall, yang sangat bermanfaat saat kedua metrik tersebut sama pentingnya.
    - **Formula**:
      
-     $$\[\text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}\]$$
+     $$\text{F1-score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
      
    - **Kegunaan**: F1-score memberikan pandangan keseluruhan performa model, terutama saat ada ketidakseimbangan antara precision dan recall.
 
