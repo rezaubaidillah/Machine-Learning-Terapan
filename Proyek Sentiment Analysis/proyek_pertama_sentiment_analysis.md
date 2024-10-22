@@ -1,5 +1,5 @@
 # Laporan Proyek Machine Learning - Muhammad Reza Ubaidillah
-Di era digital saat ini, media sosial telah menjadi bagian dari kehidupan sehari-hari masyarakat dunia. Twitter, salah satu platform media sosial yang terkemuka, memungkinkan pengguna untuk berbagi opini, pengalaman, dan informasi melalui pesan singkat yang disebut "tweet". Namun, karena kebebasan berpendapat yang diberikan, platform ini juga rentan terhadap penyebaran konten negatif seperti ujaran kebencian, kekerasan verbal, dan pesan berisi provokasi. Fenomena ini memunculkan kebutuhan mendesak untuk solusi yang efektif guna melindungi pengguna dari dampak buruk konten semacam itu.
+Di era digital ini, media sosial seperti Twitter memungkinkan individu untuk menyampaikan opini mereka secara terbuka terkait berbagai topik penting, seperti pemilihan umum, kebijakan pemerintah, atau produk komersial. Namun, dengan masifnya jumlah data, analisis manual menjadi tidak efektif dalam memahami persepsi publik. Oleh karena itu, model sentimen analisis menjadi solusi yang dapat membantu dalam mengidentifikasi sentimen masyarakat, apakah positif, negatif, atau netral, terhadap suatu topik.
 
 Twitter sendiri telah mengambil beberapa langkah untuk menangani masalah ini, namun pendekatan manual dan otomatis yang ada belum sepenuhnya efektif. Salah satu cara untuk mengatasi tantangan ini adalah dengan memanfaatkan teknologi kecerdasan buatan, khususnya Natural Language Processing (NLP), untuk mengembangkan model klasifikasi sentimen yang dapat mengidentifikasi tweet negatif dan secara otomatis mengambil tindakan terhadap konten tersebut. Dengan menganalisis sentimen tweet, Twitter dapat secara proaktif meminimalkan konten yang merusak dan menciptakan lingkungan online yang lebih sehat.
 
@@ -8,7 +8,7 @@ Masalah konten negatif di media sosial, termasuk Twitter, memiliki dampak luas p
 Model analisis sentimen berbasis NLP memungkinkan platform untuk mengenali emosi atau sentimen yang terkandung dalam teks, yang kemudian dikategorikan sebagai sentimen positif, netral, atau negatif. Melalui penerapan model ini, Twitter dapat lebih cepat mendeteksi dan memblokir konten berbahaya sebelum beredar luas. Implementasi solusi ini dapat meningkatkan pengalaman pengguna, menjaga komunitas tetap aman, serta memperkuat citra positif platform.
 
 - Referensi: 
-Fani, Syiva Multi, Rukun Santoso, and Suparti Suparti. "Penerapan Text Mining Untuk Melakukan Clustering Data Tweet Akun Blibli Pada Media Sosial Twitter Menggunakan K-Means Clustering." Jurnal Gaussian 10.4 (2021): 583-593.
+Fani, S. M., Santoso, R., & Suparti, S. (2021). Penerapan Text Mining Untuk Melakukan Clustering Data Tweet Akun Blibli Pada Media Sosial Twitter Menggunakan K-Means Clustering. Jurnal Gaussian, 10(4), 583-593.
   
 
 ## Business Understanding
@@ -41,9 +41,9 @@ Kinerja model akan dievaluasi menggunakan metrik berikut:
     - Precision: Mengukur persentase prediksi positif yang benar-benar positif.
     - Recall: Mengukur kemampuan model dalam mendeteksi seluruh tweet negatif.
     - F1-Score: Rata-rata harmonik antara precision dan recall, untuk memberikan gambaran seimbang tentang kinerja model.
-    - Support: Mengindikasikan jumlah data aktual di setiap kategori (negatif, positif, dll) yang digunakan untuk menghitung precision dan recall.
     
     Dengan pendekatan ini, kita dapat memastikan bahwa model yang dibangun fokus pada akurasi dalam mendeteksi tweet negatif tanpa mengabaikan konteks penting yang relevan.
+    > Penjelasan Metrik Evaluasi akan dibahas lebih lanjut pada bagian **Evaluation**.
 
 ## Data Understanding
 Dalam proyek ini, data yang digunakan berasal dari dataset Twitter Sentiment Analysis yang tersedia di Kaggle. Dataset ini berisi tweet yang telah diberi label sentimen. Dataset dapat diakses melalui tautan berikut: [Twitter Sentiment Analysis Dataset.](https://www.kaggle.com/datasets/daniel09817/twitter-sentiment-analysis)
@@ -162,6 +162,15 @@ Setelah teks dibersihkan dan diproses, langkah selanjutnya adalah mengubah teks 
     y = df['Label']  # Label target
     ```
     TF-IDF membantu dalam memprioritaskan kata-kata yang lebih penting dalam konteks klasifikasi sentimen, sehingga kata-kata yang terlalu umum atau sering muncul tidak diberikan bobot yang berlebihan.
+6. **Pembagian Data untuk Training dan Testing**
+Langkah terakhir dalam persiapan data adalah membagi dataset menjadi data latih (training set) dan data uji (testing set). Ini dilakukan untuk mengevaluasi kinerja model pada data yang belum pernah dilihat oleh model selama pelatihan.
+     ```
+     from sklearn.model_selection import train_test_split
+
+     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+     ```
+    Pembagian data ini penting untuk mengukur seberapa baik model dapat melakukan generalisasi pada data baru. Data uji akan digunakan untuk mengevaluasi performa model yang telah dilatih pada data latih.
 
 ## Modeling
 
@@ -243,18 +252,49 @@ Pada bagian ini, model **LinearSVC** dievaluasi menggunakan beberapa metrik untu
 
 ---
 
-### **Hasil Evaluasi Berdasarkan Metrik yang Digunakan**
+Setelah melakukan pemodelan dengan **Linear Support Vector Classifier (LinearSVC)**, evaluasi dilakukan dalam dua tahap: **baseline model** dengan parameter default, dan model yang telah mengalami **hyperparameter tuning**. Metrik evaluasi yang digunakan untuk mengukur kinerja model adalah **precision**, **recall**, **F1-score**, dan **accuracy**.
 
-Berdasarkan evaluasi menggunakan metrik **precision**, **recall**, dan **F1-score**, hasilnya adalah sebagai berikut:
+#### 1. Baseline Model
+Pada baseline, model LinearSVC dijalankan dengan parameter default tanpa penyesuaian lebih lanjut. Hasil evaluasi baseline model:
 
-| **Sentimen**  | **Precision** | **Recall** | **F1-score** |
-|---------------|---------------|------------|--------------|
-| Negative      | 0.97          | 0.97       | 0.97         |
-| Neutral       | 0.96          | 0.96       | 0.96         |
-| Positive      | 0.98          | 0.97       | 0.98         |
-| **Akurasi**   | **0.97**      | -          | -            |
-| **Macro avg** | 0.97          | 0.97       | 0.97         |
-| **Weighted avg** | 0.97       | 0.97       | 0.97         |
+| **Class**  | **Precision** | **Recall** | **F1-Score** | **Support** |
+|------------|---------------|------------|--------------|-------------|
+| Negative   | 0.97          | 0.97       | 0.97         | 47,674      |
+| Neutral    | 0.96          | 0.96       | 0.96         | 38,723      |
+| Positive   | 0.98          | 0.97       | 0.98         | 47,688      |
+
+- **Accuracy**: 97%
+- **Macro Avg**: Precision (0.97), Recall (0.97), F1-Score (0.97)
+- **Weighted Avg**: Precision (0.97), Recall (0.97), F1-Score (0.97)
+
+#### 2. Model with Hyperparameter Tuning
+Setelah baseline, dilakukan hyperparameter tuning untuk memaksimalkan performa model. Proses tuning melibatkan penyesuaian parameter seperti:
+
+- **C**: Parameter regulasi untuk mengontrol margin.
+- **Penalty**: Penggunaan penalti L2 untuk menghindari overfitting.
+- **Max Iter**: Jumlah iterasi maksimum untuk mencapai konvergensi.
+
+Hasil dari model yang telah di-tuning:
+
+| **Class**  | **Precision** | **Recall** | **F1-Score** | **Support** |
+|------------|---------------|------------|--------------|-------------|
+| Negative   | 0.97          | 0.97       | 0.97         | 47,674      |
+| Neutral    | 0.96          | 0.96       | 0.96         | 38,723      |
+| Positive   | 0.98          | 0.97       | 0.98         | 47,688      |
+
+- **Accuracy**: 97%
+- **Macro Avg**: Precision (0.97), Recall (0.97), F1-Score (0.97)
+- **Weighted Avg**: Precision (0.97), Recall (0.97), F1-Score (0.97)
+
+#### 3. Comparative Analysis
+Dari hasil evaluasi, baik **baseline model** maupun **model yang telah di-tuning** menunjukkan performa yang hampir identik. Tidak ada perbedaan signifikan dalam metrik evaluasi utama seperti precision, recall, F1-score, atau accuracy. Hal ini menunjukkan bahwa **baseline model sudah optimal** dan tidak mengalami overfitting atau underfitting pada dataset yang digunakan.
+
+#### 4. Model Terbaik
+Karena tidak ada peningkatan signifikan dari hyperparameter tuning, **baseline model** dipilih sebagai model terbaik. Alasan pemilihan baseline model adalah:
+
+- Sudah memberikan kinerja yang sangat baik dengan accuracy dan F1-score di atas 97%.
+- Tidak memerlukan tuning lebih lanjut, yang menghemat waktu dan sumber daya.
+- Sederhana dan lebih efisien tanpa tambahan kompleksitas yang tidak diperlukan.
 
 ---
 
@@ -301,9 +341,11 @@ Berdasarkan evaluasi menggunakan metrik **precision**, **recall**, dan **F1-scor
 
 ### **Kesimpulan**
 
-Berdasarkan hasil evaluasi, model yang dikembangkan dengan **LinearSVC** dan **TF-IDF** tidak hanya mampu menjawab seluruh pernyataan masalah, tetapi juga mencapai semua goals yang diharapkan. Implementasi model ini secara otomatis dapat memoderasi konten negatif di Twitter dengan presisi dan kecepatan tinggi, menggantikan pendekatan manual, dan mampu mendeteksi nuansa bahasa yang sulit dikenali oleh algoritma moderasi tradisional.
+Berdasarkan hasil evaluasi, model yang dikembangkan menggunakan LinearSVC dan TF-IDF berhasil menjawab seluruh pernyataan masalah serta mencapai semua tujuan yang telah ditetapkan. Model ini mampu mengidentifikasi sentimen publik terhadap suatu topik secara otomatis dan akurat, khususnya dalam kasus seperti pemilu atau kebijakan pemerintah.
 
-Model ini memiliki dampak signifikan pada upaya Twitter dalam menciptakan lingkungan online yang lebih aman dan kondusif bagi para penggunanya.
+Model ini memberikan solusi yang signifikan untuk memudahkan analisis sentimen di media sosial, menggantikan pendekatan manual yang tidak efisien. Dengan evaluasi metrik yang mencapai akurasi, precision, dan recall yang tinggi, model ini mampu mendeteksi dan mengklasifikasikan tweet negatif, netral, maupun positif dengan baik. Pendekatan ini sangat berguna dalam membantu pihak terkait, seperti lembaga penelitian atau pengambil kebijakan, untuk memahami persepsi publik secara lebih cepat dan tepat.
+
+Secara keseluruhan, penerapan LinearSVC dan TF-IDF memberikan hasil yang memadai dalam membangun sistem klasifikasi sentimen yang efektif untuk berbagai topik diskusi di Twitter, meningkatkan kemampuan untuk menganalisis sentimen publik dalam skala besar dengan nuansa bahasa yang beragam.
 
 
 
