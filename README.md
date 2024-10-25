@@ -1,6 +1,6 @@
 # Machine-Learning-Terapan
 
-Repositori ini merupakan sarana untuk belajar tentang penerapan machine learning melalui platform Dicoding. Untuk informasi lebih lanjut, kunjungi [Dicoding Academy](https://www.dicoding.com/academies/319/corridor).
+Repositori ini merupakan Repositori untuk belajar tentang penerapan machine learning terapan melalui platform Dicoding. Untuk informasi lebih lanjut, kunjungi [Dicoding Academy](https://www.dicoding.com/academies/319/corridor).
 
 ## Deskripsi
 
